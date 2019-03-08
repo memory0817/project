@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.hrbbs">
+
+
+
+	<!-- 글쓰기 -->
+	<insert id="write">
+		INSERT INTO hr_board
+		(num,title,name, division, position, hit, content,bgroup,step,indent)
+		values(hr_boardnum_seq.nextval,#{title},#{name},#{division},#{position},0,#{content},hr_boardnum_seq.currval,0,0)
+	</insert>
+
+	<!-- 글읽기 -->
+	<select id="view" resultType="HR_bbsDTO">
+		SELECT
+		num, title, name, division, position, cdate,udate, 
+		hit,content,bgroup,step,indent
+		FROM hr_board where num=#{num}
+	</select>
+
+	<!-- 글읽기:조회수증가 -->
+	<update id="updateHit">
+		update hr_board set hit = hit + 1
+		where num=#{num}
+	</update>
+
+	<!-- 글수정 -->
+	<update id="modify">
+		update hr_board set title=#{title},udate=sysdate,
+		content=#{content}
+		where num=#{num} 
+<!-- 		 update board set btitle=?, budate=sysdate, bcontent=?  
+		 where bnum=?   -->
+		
+	</update>
+
+	<!-- 글삭제처리(시작) -->
+
+	<!-- 1)답글존재 -->
+	<update id="update_isdel">
+		update hr_board set isdel = 'Y' where num = #{num}
+	</update>
+
+	<!-- 2)답글미존재 -->
+	<delete id="delete">
+		delete from hr_board where num=#{num}
+	</delete>
+
+	<!-- 3)답글존재여부 -->
+	<select id="isReply" resultType="Integer">
+		select count(num) from hr_board
+		where bgroup in ( select bgroup from hr_board t1
+		where t1.num = #{num})
+		and num != #{num}
+		<!-- and bnum <![CDATA[<>]]> #{bnum} -->
+		<!-- //CDATA태그는 순수 문자열로 인식하도록 함. -->
+	</select>
+
+	<!-- 글삭제처리(끝) -->
+
+	<!-- 원글가져오기 -->
+	<select id="replyView" resultType="HR_bbsDTO">
+		SELECT
+		num,title,name, division, position, hit, content,bgroup,step,indent
+		FROM hr_board
+		where num=#{num}
+	</select>
+
+	<!-- 답글등록시 -->
+	<!-- 1)이전답글 step 업데이트 -->
+	<update id="updateStep">
+		update hr_board set step=step+1 where bgroup=#{bgroup} and step>#{step}
+	</update>
+
+	<!-- 2)답글등록 -->
+	<insert id="reply">
+		INSERT INTO hr_board
+		(num,title,name, division, position, hit, content, bgroup,step,indent)
+		values(hr_boardnum_seq.nextval,
+		#{title},
+		#{name},
+		#{division},
+		#{position},
+		0,
+		#{content},
+		#{bgroup},
+		#{step}+1,
+		#{indent}+1)
+	</insert>
+
+	<!-- 게시글 총계 -->
+	<select id="totalRec" resultType="Integer">
+		SELECT count(*) totalRec from
+		hr_board
+	</select>
+	
+	<!-- 글목록전체 -->
+	<select id="listOld" resultType="HR_bbsDTO">
+		SELECT num,title,name, division, position, cdate,udate,
+			     hit,content,bgroup,step,indent 
+		  FROM (select * from hr_board order by bgroup desc, step asc) 
+	</select>
+	
+	<!-- 글목록 요청페이지 -->
+	<select id="list" resultType="HR_bbsDTO">
+		select t2.* 
+		from (select row_number() over (order by bgroup desc, step asc) as znum,t1.* 
+				    from hr_board t1 ) t2 
+		where znum between #{startRec} and #{endRec}
+	
+	</select>
+
+	<!-- 검색목록  -->
+	<select id="flist" resultType="HR_bbsDTO">
+		 select t2.*  
+		 from (select row_number() over (order by bgroup desc, step asc) as znum, t1.*  
+		       from hr_board t1  
+		       where znum > 0  
+	<bind name="keyword" value="'%'+keyword+'%'"/>
+		<choose>
+			<!-- 제목+내용 -->
+			<when test="searchType == 'TC'.toString()">
+				and title like #{keyword} or content like #{keyword}
+			</when>
+			<!-- 제목 -->
+			<when test="searchType == 'T'.toString()">
+				and title like #{keyword} 
+			</when>
+			<!-- 내용 -->
+			<when test="searchType == 'C'.toString()">
+				and content like #{keyword}
+			</when>	
+			<!-- 작성자 -->
+			<when test="searchType == 'N'.toString()">
+				and content like #{keyword}
+			</when>	
+			<otherwise>
+				and title like #{keyword} or content like #{keyword} and name like #{keyword}
+			</otherwise>
+		</choose>
+		       ) t2  
+		 where znum between #{startRecord} and #{endRecord}  
+	</select>
+
+
+	<!-- 검색총계 -->
+	<select id="searchTotalRec" resultType="Integer">
+		 select count(*) totalRec  
+		 from (select row_number() over (order by bgroup desc, step asc) as znum, t1.*  
+		       from hr_board t1  
+		       where znum > 0  
+	<bind name="keyword" value="'%'+keyword+'%'"/>
+		<choose>
+			<!-- 제목+내용 -->
+			<when test="searchType == 'TC'.toString()">
+				and title like #{keyword} or content like #{keyword}
+			</when>
+			<!-- 제목 -->
+			<when test="searchType == 'T'.toString()">
+				and title like #{keyword} 
+			</when>
+			<!-- 내용 -->
+			<when test="searchType == 'C'.toString()">
+				and content like #{keyword}
+			</when>	
+			<!-- 작성자 -->
+			<when test="searchType == 'N'.toString()">
+				and content like #{keyword}
+			</when>	
+			<otherwise>
+				and title like #{keyword} or content like #{keyword}
+			</otherwise>		
+		</choose>
+		       ) t2  
+	</select>
+</mapper>

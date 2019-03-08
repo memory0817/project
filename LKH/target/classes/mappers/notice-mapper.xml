@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.notice">
+
+	<!-- 글쓰기 -->
+	<insert id="write">
+		INSERT INTO notice
+		(num,title,name,hit,content,bgroup,step,indent)
+		values(noticenum_seq.nextval,#{title},#{name},0,#{content},noticenum_seq.currval,0,0)
+	</insert>
+
+	<!-- 글읽기 -->
+	<select id="view" resultType="NoticeDTO">
+		SELECT
+		num,title,name,cdate,udate,
+		hit,content,bgroup,step,indent
+		FROM notice where num=#{num}
+	</select>
+
+	<!-- 글읽기:조회수증가 -->
+	<update id="updateHit">
+		update notice set hit = hit + 1
+		where num=#{num}
+	</update>
+
+	<!-- 글수정 -->
+	<update id="modify">
+		update notice set title=#{title},udate=sysdate,
+		content=#{content}
+		where num=#{num} 	
+	</update>
+
+	<!-- 글삭제 -->
+	<delete id="delete">
+		delete from notice where num=#{num}
+	</delete>
+
+	<!-- 원글가져오기 -->
+	<select id="replyView" resultType="NoticeDTO">
+		SELECT
+		num,title,name,cdate,udate,
+		hit,content,bgroup,step,indent
+		FROM notice
+		where num=#{num}
+	</select>
+
+	<!-- 답글등록시 -->
+	<!-- 1)이전답글 step 업데이트 -->
+	<update id="updateStep">
+		update notice set step=step+1 where bgroup=#{bgroup} and step>#{step}
+	</update>
+
+	<!-- 2)답글등록 -->
+	<insert id="reply">
+		INSERT INTO notice
+		(num,title,hit,content,bgroup,step,indent)
+		values(noticenum_seq.nextval,
+		#{title},
+		0,
+		#{content},
+		#{bgroup},
+		#{step}+1,
+		#{indent}+1)
+	</insert>
+
+	<!-- 게시글 총계 -->
+	<select id="totalRec" resultType="Integer">
+		SELECT count(*) totalRec 
+		from notice
+	</select>
+	
+	<!-- 글목록전체 -->
+	<select id="listOld" resultType="NoticeDTO">
+		SELECT num,title,cdate,udate,
+			     hit,content,bgroup,step,indent 
+		  FROM (select * from notice order by bgroup desc, step asc) 
+	</select>
+	
+	<!-- 글목록 요청페이지 -->
+	<select id="list" resultType="NoticeDTO">
+		select t2.* 
+		from (select row_number() over (order by bgroup desc, step asc) as znum,t1.* 
+				    from notice t1 ) t2 
+		where znum between #{startRec} and #{endRec}
+	
+	</select>
+
+	<!-- 검색목록  -->
+	<select id="flist" resultType="NoticeDTO">
+		 select t2.*  
+		 from (select row_number() over (order by bgroup desc, step asc) as znum, t1.*  
+		       from notice t1  
+		       where znum > 0  
+	<bind name="keyword" value="'%'+keyword+'%'"/>
+		<choose>
+			<!-- 제목+내용 -->
+			<when test="searchType == 'TC'.toString()">
+				and title like #{keyword} or content like #{keyword}
+			</when>
+			<!-- 제목 -->
+			<when test="searchType == 'T'.toString()">
+				and title like #{keyword} 
+			</when>
+			<!-- 내용 -->	
+			<when test="searchType == 'C'.toString()">
+				and content like #{keyword}
+			</when>
+			<otherwise>			
+				and title like #{keyword} or content like #{keyword} and content like #{keyword}
+			</otherwise>		
+		</choose>
+		       ) t2  
+		 where znum between #{startRecord} and #{endRecord}  
+	</select>
+
+
+	<!-- 검색총계 -->
+	<select id="searchTotalRec" resultType="Integer">
+		 select count(*) totalRec  
+		 from (select row_number() over (order by bgroup desc, step asc) as znum, t1.*  
+		       from notice t1  
+		       where znum > 0  
+	<bind name="keyword" value="'%'+keyword+'%'"/>
+		<choose>
+			<!-- 제목+내용 -->
+			<when test="searchType == 'TC'.toString()">
+				and title like #{keyword} or content like #{keyword}
+			</when>
+			<!-- 제목 -->
+			<when test="searchType == 'T'.toString()">
+				and title like #{keyword} 
+			</when>
+			<!-- 내용 -->	
+			<when test="searchType == 'C'.toString()">
+				and content like #{keyword}
+			</when>
+			<otherwise>			
+				and title like #{keyword} or content like #{keyword} and content like #{keyword}
+			</otherwise>	
+		</choose>
+		       ) t2  
+	</select>
+</mapper>

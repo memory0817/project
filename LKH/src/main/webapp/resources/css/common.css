@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+/* font */
+@import url("http://fonts.googleapis.com/earlyaccess/notosanskr.css");
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700');
+
+/* reset with normalize */
+body,input,textarea,select,button,table{font-family:'Roboto Condensed','Noto Sans CJK KR','Noto Sans KR','나눔 바른 고딕','맑은 고딕','Malgun Gothic','돋움','Apple SD Gothic Neo',sans-serif}
+body{-ms-word-break:break-all;word-break:break-all}
+a{text-decoration:none;color:#282828}
+a:hover,a:focus,a:active{text-decoration:none;color:#282828}
+a,button,input,textarea{-webkit-transition:border-color .4s,background .4s,color .4s,opacity .4s;transition:border-color .4s,background .4s,color .4s,opacity .4s}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,button,select{margin:0;padding:0}
+li{list-style:none}
+address{font-style:normal}
+table{width:100%}
+dt{font-weight:400}
+.sect-tit.v2 h3{font-weight:100;font-size:57px;letter-spacing: -.05em}
+.sect-tit.v2 h3 span{font-weight:100} 
+.sect-tit.v2 h3 b{font-size:70px} 
+.col1{width:38.8%}
+.col2{width:19.4%}
+.col3{width:19.4%}
+.col4{width:22.2%}
+
+.bx-wrapper{max-width:100% !important;padding:0 2%}
+
+/* #business .contents{margin:0}
+#business .contents>div{float:left}
+#business .contents .frame{position: relative}
+#business .contents .cover{position: absolute;top:0;right:0;bottom:0;left:0;background:rgba(18,26,37, .9);opacity: 0;transition: all .3s}
+#business .contents .frame:hover .cover{opacity: 1}
+#business .contents .cover{font-size:20px}
+#business .contents .cover span{display: inline-block;margin-bottom:3%; border-bottom:1px solid #fff;font-size: 15px}
+#business .contents .cover>div{display: table;width:100%;height:100%}
+#business .contents .cover>div>div{display: table-cell;vertical-align: middle;text-align: center; color:#fff} */

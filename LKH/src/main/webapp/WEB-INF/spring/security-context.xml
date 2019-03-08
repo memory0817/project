@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 사용자비밀번호인코딩 -->
+<bean id="bcryptPasswordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder"/>
+<!-- 권한접근 예외발생시 실행하는 bean -->
+<bean id="customAccessDenyed" class="com.lkh.myapp.common.CustomAccessDenyHandler"/>
+<bean id="customLoginSuccess" class="com.lkh.myapp.common.CustomLoginSuccess"/>
+<bean id="customLoginFail" class="com.lkh.myapp.common.CustomLoginFail"/>
+<bean id="customLogoutSuccess" class="com.lkh.myapp.common.CustomLogoutSuccess"/>
+
+<bean id="memberSvcImpl" class="com.lkh.myapp.member.service.MemberSvcImpl"/> 
+
+<sec:http use-expressions="true">
+		<!-- csrf 적용 안함 -->
+		<sec:csrf disabled="true" />
+		
+		<!-- 로그인 -->
+		<sec:form-login login-page="/login/loginForm"
+  						username-parameter="id"
+						password-parameter="pw"
+						authentication-success-handler-ref="customLoginSuccess"
+						 authentication-failure-handler-ref="customLoginFail" />
+		
+		
+		
+		<!-- 로그아웃 -->
+		<sec:logout logout-url="/login/logout"
+					success-handler-ref="customLogoutSuccess"
+					invalidate-session="true"
+					delete-cookies="remember-me,JSESSION_ID"/>
+					
+		
+		
+		<!-- url 매핑 -->
+	<!-- <sec:intercept-url pattern="/example/all" access="permitAll()" />
+		<sec:intercept-url pattern="/test" access="permitAll()" />
+		<sec:intercept-url pattern="/example/member" access="hasAnyRole('ROLE_MEMBER')" />
+		<sec:intercept-url pattern="/example/admin" access="hasAnyRole('ROLE_ADMIN')" />
+		<sec:intercept-url pattern="/**" access="permitAll()" /> -->
+		
+		<!-- 접근제한 예외 발생시 특URI 지정하거나 AccessDenidHandler를 직접 구현한다. -->
+		<!-- <sec:access-denied-handler ref="customAccessDenyed"/> -->
+		<sec:access-denied-handler ref="customAccessDenyed"/>
+		
+		<!-- 자동로그인 60*60*7(일주일) -->
+		<sec:remember-me data-source-ref="dataSource"  token-validity-seconds="604800"/>
+	</sec:http>
+
+	
+	
+	
+<!-- <bean id="customPasswordEncoder" class="com.kh.myapp.common.CustomNoOpPasswordEncoder"/> -->
+
+
+	<sec:authentication-manager>
+		<!-- userDetailsServic 구현클래스 com.kh.myapp.member.service.MemberSvcImple -->
+		<sec:authentication-provider user-service-ref="memberSvcImpl">
+		
+	
+			<!-- <sec:user-service>
+				<sec:user name="member" password="member" authorities="ROLE_MEMBER" />
+				<sec:user name="admin" password="admin" authorities="ROLE_MEMBER,ROLE_ADMIN" />
+			</sec:user-service> -->
+			<!-- 사용자 비밀번호 인코딩 -->
+			<sec:password-encoder ref="bcryptPasswordEncoder"></sec:password-encoder>	
+			
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+</beans>

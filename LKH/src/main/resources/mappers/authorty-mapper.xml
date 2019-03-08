@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.authority">
+	<insert id="insert" parameterType="AuthorityDTO">
+		insert into AUTHORITIES (SEQ, ID, ROLEID)
+			values (AUTHORITIES_SEQ.nextval, #{id}, #{roleid})
+	</insert>
+	
+	<update id="update" parameterType="AuthorityDTO">
+		update AUTHORITIES set ROLEID = #{roleid} where seq=#{seq}
+	</update>
+	
+	<delete id="delete" parameterType="AuthorityDTO">
+		delete from AUTHORITIES where id=#{id}
+	</delete>
+		
+	<select id="selectOne" parameterType="String" resultType="AuthorityDTO">
+		select * from AUTHORITIES where id=#{id}
+	</select>
+	
+	<select id="list">
+		select * from AUTHORITIES
+	</select>
+	
+</mapper>

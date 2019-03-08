@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  <typeAliases>
+    <typeAlias alias="MemberDTO" type="com.lkh.myapp.member.dto.MemberDTO" />
+	<typeAlias alias="NoticeDTO" type="com.lkh.myapp.notice.dto.NoticeDTO"/>
+	<typeAlias alias="IT_bbsDTO" type="com.lkh.myapp.IT.dto.IT_bbsDTO"/>
+	<typeAlias alias="SALE_bbsDTO" type="com.lkh.myapp.sale.dto.SALE_bbsDTO"/>
+	<typeAlias alias="HR_bbsDTO" type="com.lkh.myapp.hr.dto.HR_bbsDTO"/>
+	<typeAlias alias="TEST_bbsDTO" type="com.lkh.myapp.test.dto.TEST_bbsDTO"/>
+	<typeAlias alias="AbbsDTO" type="com.lkh.myapp.aboard.dto.A_bbsDTO"/>
+	<typeAlias alias="ArbbsDTO" type="com.lkh.myapp.aboard.dto.A_RbbsDTO"/>
+	<typeAlias alias="GbbsDTO" type="com.lkh.myapp.gboard.dto.GbbsDTO"/>
+	<typeAlias alias="GrbbsDTO" type="com.lkh.myapp.gboard.dto.G_RbbsDTO"/>
+	<typeAlias alias="NoticeRbbsDTO" type="com.lkh.myapp.notice.dto.NoticeRbbsDTO"/>
+	<typeAlias alias="HR_RbbsDTO" type="com.lkh.myapp.hr.dto.HR_RbbsDTO"/>
+	<typeAlias alias="IT_RbbsDTO" type="com.lkh.myapp.IT.dto.IT_RbbsDTO"/>
+	<typeAlias alias="SALE_RbbsDTO" type="com.lkh.myapp.sale.dto.SALE_RbbsDTO"/> 
+	<typeAlias alias="TEST_RbbsDTO" type="com.lkh.myapp.test.dto.TEST_RbbsDTO"/> 
+	<typeAlias alias="AdminscheduleDTO" type="com.lkh.myapp.admin.schedule.dto.AdminscheduleDTO"/>
+	<typeAlias alias="ProfilDTO" type="com.lkh.myapp.member.dto.ProfilDTO"/>
+	<typeAlias alias="AuthorityDTO" type="com.lkh.myapp.authority.dto.AuthorityDTO" />
+	
+	<!-- <typeAlias alias="AuthorityDTO" type="com.lkh.myapp.authority.dto.AuthorityDTO" /> -->
+	    
+	 
+  </typeAliases> 
+</configuration>

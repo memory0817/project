@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.profil">
+	<insert id="insert">
+		insert into profil (id, originfile, randomfile) values (#{id},#{originfile}, #{randomfile})
+	</insert>
+	
+	<insert id="insertnull">
+		insert into profil (id) values (#{id})
+	</insert>
+	
+	<update id="modify">
+		update profil set originfile=#{originfile}, randomfile=#{randomfile} where id=#{id}
+	</update>
+	
+	<delete id="delete">
+		update profil set originfile='', randomfile='' where id=#{id}
+	</delete>
+	
+	<select id="select" parameterType="String" resultType="ProfilDTO">
+		select id, randomfile, originfile from profil where id=#{id}
+	</select> 
+</mapper>

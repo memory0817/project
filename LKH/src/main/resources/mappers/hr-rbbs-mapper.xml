@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.hrrbbs">
+
+
+	<!-- 댓글등록 -->
+	<insert id="write" parameterType="HR_RbbsDTO">
+		INSERT INTO hr_reply (rnum,
+		num, rid,loginid, rcontent, rgroup)
+		VALUES(HR_REPLYNUM_SEQ.nextval,#{num},#{rid},#{loginid},#{rcontent},HR_REPLYNUM_seq.currval)
+	</insert>
+
+
+	<!-- 댓글수정 -->
+	<update id="modify" parameterType="HR_RbbsDTO">
+		update hr_reply set
+		rudate=sysdate, rcontent=#{rcontent}
+		where rnum=#{rnum}
+	</update>
+
+	<!-- 댓글삭제 -->
+	<delete id="delete">
+		delete from hr_reply where rnum=#{rnum}
+	</delete>
+
+	<!-- 대댓글 존재시 isdel ->Y -->
+
+	<update id="update_isdel">
+		update hr_reply set isdel = 'Y' where rnum = #{rnum}
+	</update>
+
+	<!-- 대댓글 존재 유무 판별 -->
+	<select id="isReply" resultType="java.lang.Integer">
+		select count(rnum) from hr_reply
+		where num = (select num from hr_reply where rnum = #{rrnum})
+		and rrnum
+		=
+		#{rrnum}
+
+	</select>
+
+
+	<!-- 대댓글 등록 -->
+	<insert id="reply">
+		INSERT INTO hr_reply (rnum, num, rid, loginid, rcontent,
+		rgroup, rstep,rindent ,rrnum)
+		VALUES(
+		HR_REPLYNUM_SEQ.nextval,
+		#{originDTO.num},
+		#{hr_rbbsDTO.rid},
+		#{hr_rbbsDTO.loginid},
+		#{hr_rbbsDTO.rcontent},
+		#{originDTO.rgroup},
+		#{originDTO.rstep}+1,
+		#{originDTO.rindent}+1,
+		#{hr_rbbsDTO.rrnum})
+	</insert>
+
+	<update id="goodOrbad" parameterType="java.util.Map">
+		<choose>
+			<when test="goodOrbad == 'good'">
+				update hr_reply set rgood = rgood+1 where rnum =
+				#{rnum}
+			</when>
+			<when test="goodORbad = 'bad'">
+				update hr_reply set rbad = rbad+1 where rnum =
+				#{rnum}
+			</when>
+		</choose>
+	</update>
+
+	<!-- 댓글대상 읽어오기 -->
+	<select id="replyView" resultType="HR_RbbsDTO">
+		select num,
+		rgroup, rstep,
+		rindent from hr_reply where rnum=#{rrnum}
+	</select>
+
+	<!-- 이전답글 step 업데이트 동일그룹의 댓글중에 동일스텝의 글이 있으면 +1갱신 -->
+	<update id="updateStep" parameterType="java.lang.Integer">
+		update hr_reply set
+		rstep=rstep+1 where rgroup = #{rgroup} and rstep > #{rstep}
+	</update>
+
+	<!-- 댓글총계 -->
+	<select id="replyTotalRec" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		select count(*) totalRec from hr_reply where num=#{num}
+	</select>
+
+	<!-- 댓글 목록 -->
+	<resultMap type="HR_RbbsDTO" id="hrrbbsMap">
+		<result column="rnum" property="rnum" />
+		<result column="num" property="num" />
+		<result column="rid" property="rid" />
+		<result column="rcdate" property="rcdate" />
+		<result column="rudate" property="rudate" />
+		<result column="rcontent" property="rcontent" />
+		<result column="rgroup" property="rgroup" />
+		<result column="rstep" property="rstep" />
+		<result column="isdel" property="isdel" />
+		<result column="rrnum" property="rrnum" />
+		<result column="rindent" property="rindent" />
+		<result column="loginid" property="loginid" />
+
+		<association property="hr_rdto" javaType="HR_RbbsDTO">
+			<result column="rnum_1" property="rnum" />
+			<result column="num_1" property="num" />
+			<result column="rid_1" property="rid" />
+			<result column="rcdate_1" property="rcdate" />
+			<result column="rudate_1" property="rudate" />
+			<result column="rcontent_1" property="rcontent" />
+			<result column="rgroup_1" property="rgroup" />
+			<result column="rstep_1" property="rstep" />
+			<result column="isdel_1" property="isdel" />
+			<result column="rrnum_1" property="rrnum" />
+			<result column="rindent_1" property="rindent" />
+			<result column="loginid_1" property="loginid"/>
+		</association>
+	</resultMap>
+
+	<select id="list" resultMap="hrrbbsMap">
+		select x.*,
+		y.rnum rnum_1,
+		y.num
+		num_1,
+		y.rid rid_1,
+		y.rcdate rcdate_1,
+		y.rudate rudate_1,
+		y.rcontent
+		rcontent_1,
+		y.rgroup rgroup_1,
+		y.rstep rstep_1,
+		y.isdel isdel_1,
+		y.rrnum rrnum_1,
+		y.loginid loginid_1,
+		y.rindent rindent_1
+		from (select t2.*
+		from (select row_number()
+		over (order by rgroup asc, rstep desc) as
+		nnum,t1.*
+		from hr_reply t1
+		where num=#{num} ) t2
+		where nnum between #{startRec} and #{endRec}) x,
+		(select *
+		from hr_reply
+		where num=#{num} and rnum in (
+		select distinct
+		t4.rrnum
+		from (select row_number() over
+		(order by rgroup desc, rstep
+		asc) as nnum,t3.*
+		from hr_reply t3
+		where num=#{num} and rrnum > 0) t4
+		where nnum between #{startRec} and #{endRec})) y
+		where x.rrnum =
+		y.rnum(+)
+		order by x.nnum
+	</select>
+
+
+
+</mapper>
