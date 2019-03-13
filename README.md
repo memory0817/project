@@ -6,14 +6,18 @@
 - 기업의 홍보 및 인트라넷 사이트를 만들어보고 싶어서 제작을 시작하게 되었습니다.  
 - 일반사이트에 경쟁해도 뒤쳐지지않는 퀄리티있는 홈페이지를 만들고 보고싶었습니다.
 
-# 개발환경설정
-- JDK 버전 설정 
-- Tomcat Server 설정
-- Spring, Mybatis, My SQL 연결 설정
-- Maven 라이브러리 설정
+# 개발환경
+> Back-End
+- JDK 1.8
+- Java 8
+- Tomcat Server 8.5
+- Spring 5.1.3  
+- Mybatis 3.4.6
+- oracle
+- Maven 2.9
 
-# 화면구성
-- Bootstrap4
+> Front-End
+- Bootstrap 4
 - Ajax
 - Restful API
 - Daum map API
