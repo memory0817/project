@@ -16,6 +16,8 @@
 - Bootstrap4
 - Ajax
 - Restful API
+- Daum map API
+- FullCalendar API
 
 # 기능설명
 - 회원가입<br>
