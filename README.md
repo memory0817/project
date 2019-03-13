@@ -12,6 +12,11 @@
 - Spring, Mybatis, My SQL 연결 설정
 - Maven 라이브러리 설정
 
+# 화면구성
+- Bootstrap4
+- Ajax
+- Restful API
+
 # 기능설명
 - 회원가입<br>
 - 로그인,로그아웃<br>
