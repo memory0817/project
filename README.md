@@ -9,7 +9,7 @@
 # 개발환경설정
 - JDK 버전 설정 
 - Tomcat Server 설정
-- Spring, Mybatis
+- Spring, Mybatis, My SQL 연결 설정
 - Maven 라이브러리 설정
 
 # 기능설명
