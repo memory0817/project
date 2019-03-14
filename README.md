@@ -15,13 +15,12 @@
 - Mybatis 3.4.6
 - oracle
 - Maven 2.9
+- Open API
+- Restful API
 
 > Front-End
 - Bootstrap 4
 - Ajax
-- Restful API
-- Daum map API
-- FullCalendar API
 
 # 기능설명
 - 회원가입<br>
@@ -31,9 +30,13 @@
 - 지도 API사용 오시는 길 출력<br>
 - 달력 API사용 스케쥴 관리 <br>
 - 게시판 CRUD<br>
-- 댓글 CRUD<br>
+- 댓글 추천,비추천 기능<br>
 - 게시판, 댓글 검색기능<br> 
 - 관리자,사원회원부서별 권한주기 <br>
 
-# 사용예제
+# Demo
 [동영상시연](https://youtu.be/mLmal7KWXp8)
+
+# 보완계획
+- 사원프로필에 실시간 상태 알림 기능
+- 로그인 시도시 현재 아이피 이메일로 전송
