@@ -13,13 +13,14 @@
 - Tomcat Server 8.5
 - Spring 5.1.3  
 - Mybatis 3.4.6
-- oracle
+- Oracle
 - Maven 2.9
 - Open API
 - Restful API
 
 > Front-End
 - Bootstrap 4
+- JQuery 3
 - Ajax
 
 # 기능설명
